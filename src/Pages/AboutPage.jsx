@@ -4,6 +4,7 @@ import seoImage from "../data/seo.png"
 import chatImage from "../data/chat.png"
 import timeImage from "../data/time.png"
 import Experience from '../ui/Experience'
+import Nav from './Nav'
 
 const AboutPage = () => {
 
@@ -31,6 +32,7 @@ const AboutPage = () => {
 
   return (
     <>
+    <Nav></Nav>
     <div className='bg-black h-[450px] flex flex-col text-8xl  items-center abhaya-extrabold'>
       <div className='relative top-30 tracking-wider left-36'>
     <div className='text-white relative right-56'>Crafting Worlds.</div>

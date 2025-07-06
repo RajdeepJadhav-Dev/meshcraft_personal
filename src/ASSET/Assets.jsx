@@ -5,7 +5,7 @@ import { OrbitControls, Environment } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 import authContext from "../context/authContext";
-import { FaArrowCircleLeft, FaShoppingCart, FaCreditCard, FaHeart, FaShare, FaCube, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { FaArrowCircleLeft, FaShoppingCart, FaCreditCard, FaHeart, FaShare, FaCube, FaStar, FaStarHalfAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 
 // Camera control component
@@ -214,6 +214,13 @@ const Model = ({ idleModelUrl, walkModelUrl, rotation, isAnimating, selectedAnim
   );
 };
 
+
+
+/* Updated MiniCanvas Component with better styling */
+
+
+
+
 const AssetDetailPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -227,6 +234,7 @@ const AssetDetailPage = () => {
   const [cameraTarget, setCameraTarget] = useState(null);
   const [cameraLookAt, setCameraLookAt] = useState(null);
   const [activeView, setActiveView] = useState('perspective');
+  const [currentViewIndex, setCurrentViewIndex] = useState(0);
 
   if (!asset) return (
     <div className="bg-gradient-to-br from-gray-900 via-black to-purple-900 min-h-screen flex items-center justify-center">
@@ -259,51 +267,69 @@ const AssetDetailPage = () => {
   );
 
   // Camera view configurations
-  const cameraViews = {
-    perspective: {
-      position: defaultCameraPosition,
-      lookAt: [0, 0, 0],
-      label: 'Perspective'
-    },
-    front: {
-      position: [0, 0, distance],
-      lookAt: [0, 0, 0],
-      label: 'Front'
-    },
-    back: {
-      position: [0, 0, -distance],
-      lookAt: [0, 0, 0],
-      label: 'Back'
-    },
-    left: {
-      position: [-distance, 0, 0],
-      lookAt: [0, 0, 0],
-      label: 'Left'
-    },
-    right: {
-      position: [distance, 0, 0],
-      lookAt: [0, 0, 0],
-      label: 'Right'
-    },
-    top: {
-      position: [0, distance, 0],
-      lookAt: [0, 0, 0],
-      label: 'Top'
-    },
-    bottom: {
-      position: [0, -distance, 0],
-      lookAt: [0, 0, 0],
-      label: 'Bottom'
-    }
-  };
+  // Camera view configurations
+const cameraViews = [
+  {
+    key: 'perspective',
+    position: defaultCameraPosition,
+    lookAt: [0, 0, 0],
+    label: 'Perspective View'
+  },
+  {
+    key: 'front',
+    position: [0, 0, distance],
+    lookAt: [0, 0, 0],
+    label: 'Front View'
+  },
+  {
+    key: 'back',
+    position: [0, 0, -distance],
+    lookAt: [0, 0, 0],
+    label: 'Back View'
+  },
+  {
+    key: 'left',
+    position: [-distance, 0, 0],
+    lookAt: [0, 0, 0],
+    label: 'Left Side View'
+  },
+  {
+    key: 'right',
+    position: [distance, 0, 0],
+    lookAt: [0, 0, 0],
+    label: 'Right Side View'
+  },
+  {
+    key: 'top',
+    position: [0, distance, 0],
+    lookAt: [0, 0, 0],
+    label: 'Top View'
+  },
+  {
+    key: 'bottom',
+    position: [0, -distance, 0],
+    lookAt: [0, 0, 0],
+    label: 'Bottom View'
+  }
+];
 
-  const handleCameraView = (viewKey) => {
-    const view = cameraViews[viewKey];
-    setCameraTarget(view.position);
-    setCameraLookAt(view.lookAt);
-    setActiveView(viewKey);
-  };
+const handleCameraView = (viewIndex) => {
+  const view = cameraViews[viewIndex];
+  setCameraTarget(view.position);
+  setCameraLookAt(view.lookAt);
+  setActiveView(view.key);
+  setCurrentViewIndex(viewIndex);
+};
 
+const handlePrevView = () => {
+  const newIndex = currentViewIndex === 0 ? cameraViews.length - 1 : currentViewIndex - 1;
+  handleCameraView(newIndex);
+};
+
+const handleNextView = () => {
+  const newIndex = currentViewIndex === cameraViews.length - 1 ? 0 : currentViewIndex + 1;
+  handleCameraView(newIndex);
+};
   const handleQuantityChange = (change) => {
     setQuantity(prev => Math.max(1, prev + change));
   };
@@ -375,22 +401,74 @@ const AssetDetailPage = () => {
           </div>
 
           {/* Camera View Controls */}
-          <div className="mt-6">
-           
-            <div className="grid grid-cols-4 gap-3">
-              {Object.entries(cameraViews).map(([key, view]) => (
+        {/* Camera View Carousel Controls */}
+{/* Camera View Carousel Controls */}
+  <div className="mt-6">
+            <div className="bg-gray-800/20 backdrop-blur-sm rounded-xl p-6 border border-gray-700/30">
+              {/* Enhanced Carousel Layout with proper spacing */}
+              <div className="flex items-center gap-6">
+                {/* Left Arrow - Fixed position */}
                 <button
-                  key={key}
-                  onClick={() => handleCameraView(key)}
-                  className={`h-12 rounded-xl flex items-center justify-center text-xs font-bold uppercase tracking-wide transition-all duration-300 border-2 transform hover:scale-105 ${
-                    activeView === key 
-                      ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-cyan-400 shadow-lg shadow-cyan-500/25' 
-                      : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 hover:text-white border-gray-600/50 hover:border-gray-500/50 backdrop-blur-sm'
-                  }`}
+                  onClick={handlePrevView}
+                  className="w-12 h-12 bg-gray-800/60 hover:bg-gray-700/60 rounded-xl flex items-center justify-center border border-gray-600/40 hover:border-gray-500/60 transition-all duration-300 group flex-shrink-0 shadow-lg z-10"
                 >
-                  {view.label}
+                  <FaChevronLeft className="text-white/80 group-hover:text-cyan-400 transition-colors duration-300 text-lg" />
                 </button>
-              ))}
+
+                {/* Mini Canvas Container - Centered with controlled width */}
+                <div className="flex-1 flex justify-center">
+                  <div className="flex gap-3 items-center max-w-fit">
+                    {cameraViews.map((view, index) => (
+                      <button
+                        key={view.key}
+                        onClick={() => handleCameraView(index)}
+                        className={`relative transition-all duration-300 transform ${
+                          index === currentViewIndex
+                            ? 'scale-105'
+                            : 'hover:scale-105'
+                        }`}
+                        title={view.label}
+                      >
+                        {/* Optimized Mini Canvas Container */}
+                        <div className={`w-28 h-22 rounded-lg overflow-hidden border-2 transition-all duration-300 shadow-lg ${
+                          index === currentViewIndex 
+                            ? 'border-cyan-400 shadow-cyan-500/30 ring-1 ring-cyan-400/20' 
+                            : 'border-gray-500/40 hover:border-gray-400/60 shadow-gray-900/50'
+                        }`}>
+                          <Canvas 
+                            camera={{ position: view.position, fov: 50 }} 
+                            style={{ 
+                              background: index === currentViewIndex
+                                ? "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f4c75 100%)"
+                                : "linear-gradient(135deg, #1f1f1f 0%, #2d1b69 80%, #1a1a2e 100%)",
+                              width: "100%",
+                              height: "100%"
+                            }}
+                          >
+                            <Suspense fallback={null}>
+                              <Model
+                                idleModelUrl={modelUrl}
+                                walkModelUrl={modelUrl}
+                                rotation={rotation}
+                                isAnimating={false}
+                                selectedAnimation="idle"
+                              />
+                            </Suspense>
+                          </Canvas>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right Arrow - Fixed position */}
+                <button
+                  onClick={handleNextView}
+                  className="w-12 h-12 bg-gray-800/60 hover:bg-gray-700/60 rounded-xl flex items-center justify-center border border-gray-600/40 hover:border-gray-500/60 transition-all duration-300 group flex-shrink-0 shadow-lg z-10"
+                >
+                  <FaChevronRight className="text-white/80 group-hover:text-cyan-400 transition-colors duration-300 text-lg" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

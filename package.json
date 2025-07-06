@@ -12,6 +12,7 @@
     "@gsap/react": "^2.1.2",
     "@react-three/drei": "^10.1.2",
     "@react-three/fiber": "^9.1.2",
+    "@splinetool/react-spline": "^4.0.0",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
