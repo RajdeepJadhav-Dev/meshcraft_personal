@@ -53,7 +53,7 @@ const ServicesPage = () => {
       <div className='flex justify-center items-center h-screen bg-black'>
         <div className='flex flex-col justify-center items-center pb-16'>
           <div className='text-white pb-8 tracking-widest'>MESHCRAFT</div>
-          <div className='text-white text-8xl font-bold'>OUR CORE SERVICES</div>
+          <div className='text-white text-8xl font-bold'>OUR CORE OFFERINGS</div>
           <div className='text-white pt-10 text-lg'>Delivering industry-leading 3D solutions tailored to your needs.</div>
         </div>
       </div>
